@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.subject.mapper.UserMapper">
+    <resultMap id="UserAndRoleMap" type="com.subject.domain.vo.UserVo">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="salt" column="salt"/>
+        <result property="name" column="name"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="createTime" column="create_time"/>
+        <result property="enabled" column="enabled"/>
+        <collection column="id" property="roles" javaType="java.util.List" ofType="com.subject.domain.entity.AdminRole" select="getRoleByUId"/>
+    </resultMap>
+    <!-- 按角色名称查询用户（关联user + admin_user_role + admin_role） -->
+    <select id="selectUserByRoleName" resultType="com.subject.domain.entity.User">
+        SELECT u.* FROM `user` u
+        INNER JOIN `admin_user_role` ur ON u.id = ur.uid
+        INNER JOIN `admin_role` ar ON ur.rid = ar.id
+        WHERE ar.name = #{roleName} AND u.enabled = 1
+        ORDER BY u.create_time DESC
+    </select>
+    <select id="selectPageUserList" resultMap="UserAndRoleMap">
+            SELECT
+            	`user`.id,
+            	`user`.username,
+            	`user`.`password`,
+            	`user`.salt,
+            	`user`.`name`,
+            	`user`.phone,
+            	`user`.email,
+            	`user`.create_time,
+            	`user`.enabled
+            FROM
+            	`user`
+            <if test="ew.sqlSegment != null and ew.sqlSegment != ''">
+                ${ew.customSqlSegment}
+            </if>
+    </select>
+    <select id="getRoleByUId" resultType="com.subject.domain.entity.AdminRole">
+         SELECT
+            	role.id ,
+            	role.`name` ,
+            	role.name_zh,
+            	role.enabled
+            FROM
+            	admin_role role
+             JOIN admin_user_role urole ON role.id = urole.rid
+             where urole.uid=#{id}
+    </select>
+
+    <!-- 学生新增 -->
+    <insert id="saveStudent" parameterType="com.subject.domain.entity.User"
+            useGeneratedKeys="true" keyProperty="user.id">
+        INSERT INTO `user` (
+            username,
+            `password`,
+            salt,
+            `name`,
+            phone,
+            email,
+            enabled
+        ) VALUES (
+                     #{user.username},
+                     #{user.password},
+                     #{user.salt},
+                     #{user.name},
+                     #{user.phone},
+                     #{user.email},
+                     #{user.enabled}
+                 )
+    </insert>
+
+    <!-- 学生修改 -->
+    <update id="updateStudentById" parameterType="com.subject.domain.entity.User">
+        UPDATE `user`
+        SET
+            username = #{user.username},
+            `password` = #{user.password},
+            salt = #{user.salt},
+            `name` = #{user.name},
+            phone = #{user.phone},
+            email = #{user.email},
+            enabled = #{user.enabled}
+        WHERE
+            id = #{user.id}
+    </update>
+
+    <!-- 学生删除 -->
+    <delete id="removeStudentById" parameterType="java.lang.Long">
+        DELETE FROM `user`
+        WHERE id = #{id}
+    </delete>
+
+    <!-- 新增用户教师 -->
+    <insert id="insertTeacher" parameterType="com.subject.domain.entity.User"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `user` (
+            username, `password`, salt, `name`,
+            phone, email, enabled
+        ) VALUES (
+            #{user.username},
+            #{user.password},
+            #{user.salt},
+            #{user.name},
+            #{user.phone},
+            #{user.email},
+            #{user.enabled}
+        )
+    </insert>
+
+    <!-- 修改教师 -->
+    <update id="updateTeacherById" parameterType="com.subject.domain.entity.User">
+        UPDATE `user`
+        <set>
+            <if test="user.username != null and user.username != ''">username = #{user.username},</if>
+            <if test="user.password != null and user.password != ''">`password` = #{user.password},</if>
+            <if test="user.salt != null and user.salt != ''">`salt` = #{user.salt},</if>
+            <if test="user.name != null and user.name != ''">`name` = #{user.name},</if>
+            <if test="user.phone != null and user.phone != ''">phone = #{user.phone},</if>
+            <if test="user.email != null and user.email != ''">email = #{user.email},</if>
+            <if test="user.enabled != null">enabled = #{user.enabled}</if>
+        </set>
+        WHERE id = #{user.id}
+    </update>
+
+    <!-- 删除教师 -->
+    <delete id="deleteTeacherById" parameterType="java.lang.Long">
+        DELETE FROM `user` WHERE id = #{id}
+    </delete>
+
+    <!-- 查询所有教师的username列表 -->
+    <select id="selectTeacherUsernames" resultType="java.lang.String">
+        SELECT username FROM `user` WHERE username REGEXP '^[0-9]+$' ORDER BY CAST(username AS UNSIGNED) DESC
+    </select>
+
+</mapper>

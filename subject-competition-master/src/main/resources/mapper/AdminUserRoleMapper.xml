@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.subject.mapper.AdminUserRoleMapper">
+    <update id="UpdateUserRole" useGeneratedKeys="true" parameterType="java.util.List">
+        INSERT INTO admin_user_role(id,uid,rid) VALUES
+        <foreach collection="list" item="item" separator="," index="index">
+            (#{item.id},#{item.uid},#{item.rid})
+        </foreach>
+        on duplicate key update
+        uid=values(uid),
+        rid=values(rid)
+    </update>
+    <!-- 插入用户-角色关联数据 -->
+    <insert id="insertAdminUserRole" parameterType="com.subject.domain.entity.AdminUserRole">
+        INSERT INTO `admin_user_role` (
+            uid,
+            rid
+        ) VALUES (
+                     #{adminUserRole.uid},
+                     #{adminUserRole.rid}
+                 )
+    </insert>
+
+    <delete id="deleteByuid" parameterType="java.lang.Long">
+        DELETE FROM `admin_user_role`
+        WHERE uid = #{uid}
+    </delete>
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.subject.mapper.TeamMemberMapper">
+<!--  有则更新,无则插入-->
+    <update id="saveTeamMemberList" useGeneratedKeys="true" parameterType="java.util.List" >
+        insert into team_member
+        (
+        member_no,
+        team_no,
+        student_no,
+        student_name,
+        college_name,
+        class_name,
+        grade,
+        major,
+        mail,
+        mobile_number
+        )
+        values
+        <foreach collection="list" item="item" index="index" open="" close="" separator=",">
+            (
+            #{item.memberNo},
+            #{item.teamNo},
+            #{item.studentNo},
+            #{item.studentName},
+            #{item.collegeName},
+            #{item.className},
+            #{item.grade},
+            #{item.major},
+            #{item.mail},
+            #{item.mobileNumber}
+            )
+        </foreach>
+        on duplicate key update
+        team_no=values(team_no),
+        student_no=values(student_no),
+        student_name=values(student_name),
+        college_name=values(college_name),
+        class_name=values(class_name),
+        grade=values(grade),
+        major=values(major),
+        mail=values(mail),
+        mobile_number=values(mobile_number)
+    </update>
+
+</mapper>

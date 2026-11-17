@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.subject.mapper.DashboardMapper">
+
+    <!-- 统计用户量 -->
+    <select id="countUser" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM user
+    </select>
+
+    <!-- 统计团队量 -->
+    <select id="countTeam" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM sys_team
+    </select>
+
+    <!-- 统计通知公告量 -->
+    <select id="countArticle" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM article
+    </select>
+
+    <!-- 统计申请立项量 -->
+    <select id="countSysProject" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM sys_project WHERE delete_flag = 0
+    </select>
+
+    <!-- 统计竞赛一览量 -->
+    <select id="countProjectView" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM project_view
+    </select>
+
+</mapper>

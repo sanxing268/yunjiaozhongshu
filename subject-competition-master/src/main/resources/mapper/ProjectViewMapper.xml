@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.subject.mapper.ProjectViewMapper">
+    <resultMap id="projectViewList" type="com.subject.domain.vo.ProjectViewVo">
+        <id column="id" property="id"/>
+        <result column="cover" property="cover"/>
+        <result column="title" property="title"/>
+        <result column="author" property="author"/>
+        <result column="date" property="date"/>
+        <result column="press" property="press"/>
+        <result column="abs" property="abs"/>
+        <association property="category" javaType="com.subject.domain.entity.Category">
+            <id property="id" column="cid"/>
+            <result property="name" column="name"/>
+        </association>
+    </resultMap>
+    <select id="selectProjectViewList" resultMap="projectViewList">
+        SELECT project.id,project.cover,project.title,project.author,project.date,project.press,project.abs,c.id cid ,c.name FROM project_view project ,category c
+        where project.cid=c.id
+        <if test="ew.sqlSegment != null and ew.sqlSegment != ''">
+          and  ${ew.SqlSegment}
+        </if>
+    </select>
+
+</mapper>

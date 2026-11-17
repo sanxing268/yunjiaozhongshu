@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.subject.mapper.AdminRoleMapper">
+    <resultMap id="RoleAndPerAndMenuMap" type="com.subject.domain.vo.AdminRoleVo">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="nameZh" column="name_zh"/>
+        <result property="enabled" column="enabled"/>
+        <collection column="id" property="perms" javaType="java.util.List" ofType="com.subject.domain.entity.AdminPermission" select="getPerByRId"/>
+        <collection column="id" property="menus" javaType="java.util.List" ofType="com.subject.domain.vo.AdminMenuVo" select="getMenusByRId"/>
+    </resultMap>
+    <resultMap id="MenusListMap" type="com.subject.domain.vo.AdminMenuVo">
+        <id property="id" column="id"/>
+        <result property="path" column="path"/>
+        <result property="name" column="name"/>
+        <result property="nameZh" column="name_zh"/>
+        <result property="iconCls" column="icon_cls"/>
+        <result property="component" column="component"/>
+        <result property="parentId" column="parent_id"/>
+
+        <collection column="{id=id,rid=rid}" property="children" javaType="java.util.List" ofType="com.subject.domain.entity.AdminMenu" select="getAllByParentId"/>
+    </resultMap>
+    <select id="selectPageRoleList" resultMap="RoleAndPerAndMenuMap">
+          SELECT
+            admin_role.id,
+            admin_role.`name`,
+            admin_role.name_zh,
+            admin_role.enabled
+            FROM
+            admin_role
+        <if test="ew.sqlSegment != null and ew.sqlSegment != ''">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
+
+    <select id="getPerByRId" resultType="com.subject.domain.entity.AdminPermission">
+        SELECT DISTINCT
+        admin_permission.id ,
+        admin_permission.`name` ,
+        admin_permission.description,
+        admin_permission.url
+        FROM
+        admin_role
+         JOIN admin_role_permission ON admin_role.id = admin_role_permission.rid
+         JOIN admin_permission ON admin_role_permission.pid = admin_permission.id
+        WHERE admin_role.id=#{id}
+        <!-- MySQL 5.7+ 在开启 ONLY_FULL_GROUP_BY / 严格模式下，
+             ORDER BY 中的列如果不在 SELECT DISTINCT 列表中会报错。
+             这里只按权限ID排序即可，去掉 admin_role.id 的排序。 -->
+        ORDER BY admin_permission.id
+    </select>
+    <select id="getMenusByRId" resultMap="MenusListMap">
+      SELECT DISTINCT
+	        admin_menu.id,
+	        admin_menu.path,
+	        admin_menu.`name`,
+	        admin_menu.name_zh,
+	        admin_menu.icon_cls,
+	        admin_menu.component,
+	        admin_menu.parent_id,
+	        admin_role_menu.rid
+        FROM
+	        admin_role
+        JOIN admin_role_menu ON admin_role.id = admin_role_menu.rid
+        JOIN admin_menu ON admin_role_menu.mid = admin_menu.id
+        WHERE
+            admin_role.id=#{id} and
+	        admin_menu.parent_id = 0
+        ORDER BY
+	        admin_menu.id
+    </select>
+    <select id="getAllByParentId" resultType="com.subject.domain.entity.AdminMenu">
+        SELECT
+	        admin_menu.id,
+	        admin_menu.path,
+	        admin_menu.`name`,
+	        admin_menu.name_zh,
+	        admin_menu.icon_cls,
+	        admin_menu.component,
+	        admin_menu.parent_id
+        FROM
+	        admin_role
+        JOIN admin_role_menu ON admin_role.id = admin_role_menu.rid
+        JOIN admin_menu ON admin_role_menu.mid = admin_menu.id
+        WHERE
+            admin_role.id=#{rid} and
+	        admin_menu.parent_id = #{id}
+        ORDER BY
+	        admin_menu.id
+    </select>
+</mapper>

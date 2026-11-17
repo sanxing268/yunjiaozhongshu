@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.subject.mapper.AchievementMapper">
+    <!-- 实体类字段映射 -->
+    <resultMap id="AchievementResultMap" type="com.subject.domain.entity.Achievement">
+        <id column="achievement_id" property="achievementId"/>
+        <result column="title" property="title"/>
+        <result column="level" property="level"/>
+        <result column="team" property="team"/>
+        <result column="award_date" property="awardDate"/>
+        <result column="description" property="description"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="del_flag" property="delFlag"/>
+    </resultMap>
+
+    <!-- 新增竞赛成果 -->
+    <insert id="insertAchievement" parameterType="com.subject.domain.entity.Achievement" useGeneratedKeys="true" keyProperty="achievementId">
+        INSERT INTO sys_achievement (title, level, team, award_date, description)
+        VALUES (#{title}, #{level}, #{team}, #{awardDate}, #{description})
+    </insert>
+
+    <!-- 修改竞赛成果 -->
+    <update id="updateAchievementById" parameterType="com.subject.domain.entity.Achievement">
+        UPDATE sys_achievement
+        <set>
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="level != null and level != ''">level = #{level},</if>
+            <if test="team != null and team != ''">team = #{team},</if>
+            <if test="awardDate != null">award_date = #{awardDate},</if>
+            <if test="description != null and description != ''">description = #{description},</if>
+            update_time = NOW()
+        </set>
+        WHERE achievement_id = #{achievementId} AND del_flag = 0
+    </update>
+
+    <!-- 删除竞赛成果（软删除） -->
+    <update id="deleteAchievementById" parameterType="java.lang.Integer">
+        UPDATE sys_achievement SET del_flag = 1, update_time = NOW()
+        WHERE achievement_id = #{achievementId}
+    </update>
+</mapper>

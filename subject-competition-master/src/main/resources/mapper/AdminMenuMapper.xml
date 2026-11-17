@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.subject.mapper.AdminMenuMapper">
+    <sql id="admin_menu">
+        DISTINCT
+        	admin_menu.id,
+        	admin_menu.path,
+        	admin_menu. NAME,
+        	admin_menu.name_zh,
+        	admin_menu.icon_cls,
+        	admin_menu.component,
+        	admin_menu.parent_id,
+    </sql>
+    <resultMap id="MenusListMapByUserId" type="com.subject.domain.vo.AdminMenuVo">
+        <id property="id" column="id"/>
+        <result property="path" column="path"/>
+        <result property="name" column="name"/>
+        <result property="nameZh" column="name_Zh"/>
+        <result property="iconCls" column="icon_cls"/>
+        <result property="component" column="component"/>
+        <result property="parentId" column="parent_id"/>
+        <collection column="{id=id,uid=uid}" property="children" javaType="java.util.List" ofType="com.subject.domain.entity.AdminMenu" select="getAllByParentIdByUserId"/>
+    </resultMap>
+    <select id="getMenusByUserId" parameterType="Integer" resultMap="MenusListMapByUserId">
+        SELECT <include refid="admin_menu"></include>
+        	admin_user_role.uid
+        FROM
+        	admin_menu
+        JOIN admin_role_menu ON admin_menu.id = admin_role_menu.mid
+        JOIN admin_user_role ON admin_role_menu.rid = admin_user_role.rid
+        WHERE
+        	admin_user_role.uid = #{uid}
+        AND admin_menu.parent_id = 0
+    </select>
+    <select id="getAllByParentIdByUserId" resultType="com.subject.domain.entity.AdminMenu">
+        SELECT <include refid="admin_menu"></include>
+            admin_user_role.uid
+        FROM
+            admin_menu
+        JOIN admin_role_menu ON admin_menu.id = admin_role_menu.mid
+        JOIN admin_user_role ON admin_role_menu.rid = admin_user_role.rid
+        WHERE
+            admin_user_role.uid = #{uid} and
+	        admin_menu.parent_id = #{id}
+        ORDER BY
+	        admin_menu.id
+    </select>
+    <resultMap id="MenusListMapByRoleId" type="com.subject.domain.vo.AdminMenuVo">
+        <id property="id" column="id"/>
+        <result property="path" column="path"/>
+        <result property="name" column="name"/>
+        <result property="nameZh" column="name_Zh"/>
+        <result property="iconCls" column="icon_cls"/>
+        <result property="component" column="component"/>
+        <result property="parentId" column="parent_id"/>
+        <collection column="{id=id,rid=rid}" property="children" javaType="java.util.List" ofType="com.subject.domain.entity.AdminMenu" select="getAllByParentIdByRoleId"/>
+    </resultMap>
+    <select id="getAllByParentIdByRoleId" resultType="com.subject.domain.entity.AdminMenu">
+        SELECT <include refid="admin_menu"></include>
+            admin_role_menu.rid
+        FROM
+            admin_menu
+        JOIN admin_role_menu ON admin_menu.id = admin_role_menu.mid
+        WHERE
+            admin_role_menu.rid = #{rid} and
+	        admin_menu.parent_id = #{id}
+        ORDER BY
+	        admin_menu.id
+    </select>
+    <resultMap id="MenusListMap" type="com.subject.domain.vo.AdminMenuVo">
+        <id property="id" column="id"/>
+        <result property="path" column="path"/>
+        <result property="name" column="name"/>
+        <result property="nameZh" column="name_Zh"/>
+        <result property="iconCls" column="icon_cls"/>
+        <result property="component" column="component"/>
+        <result property="parentId" column="parent_id"/>
+        <collection column="id" property="children" javaType="java.util.List" ofType="com.subject.domain.entity.AdminMenu" select="getAllByParentId"/>
+    </resultMap>
+    <select id="getMenusList" resultMap="MenusListMap">
+        SELECT *  FROM admin_menu where  parent_id= 0
+    </select>
+    <select id="getAllByParentId"  resultType="com.subject.domain.entity.AdminMenu">
+        SELECT *  FROM admin_menu where  parent_id= #{id}
+    </select>
+</mapper>

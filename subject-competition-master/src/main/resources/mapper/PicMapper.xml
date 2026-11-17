@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.subject.mapper.PicMapper">
+    <!-- 实体类字段映射 -->
+    <resultMap id="PicResultMap" type="com.subject.domain.entity.Pic">
+        <id column="id" property="id"/>
+        <result column="url" property="url"/>
+        <result column="title" property="title"/>
+    </resultMap>
+
+    <!-- 新增轮播图 -->
+    <insert id="insertPic" parameterType="com.subject.domain.entity.Pic" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pic (url, title)
+        VALUES (#{url}, #{title})
+    </insert>
+
+    <!-- 修改轮播图-->
+    <update id="updatePicById" parameterType="com.subject.domain.entity.Pic">
+        UPDATE pic
+        <set>
+            <if test="url != null and url != ''">url = #{url},</if>
+            <if test="title != null and title != ''">title = #{title}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除轮播图 -->
+    <delete id="deletePicById" parameterType="java.lang.Integer">
+        DELETE FROM pic WHERE id = #{id}
+    </delete>
+</mapper>

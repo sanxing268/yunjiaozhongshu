@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.subject.mapper.DownloadMapper">
+    <resultMap id="DownloadResultMap" type="com.subject.domain.entity.Download">
+        <id column="download_id" property="downloadId"/>
+        <result column="title" property="title"/>
+        <result column="description" property="description"/>
+        <result column="file_url" property="fileUrl"/>
+        <result column="file_size" property="fileSize"/>
+        <result column="category" property="category"/>
+        <result column="download_count" property="downloadCount"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="del_flag" property="delFlag"/>
+    </resultMap>
+
+    <insert id="insertDownload" parameterType="com.subject.domain.entity.Download" useGeneratedKeys="true" keyProperty="downloadId">
+        INSERT INTO sys_download (title, description, file_url, file_size, category)
+        VALUES (#{title}, #{description}, #{fileUrl}, #{fileSize}, #{category})
+    </insert>
+
+    <update id="updateDownloadById" parameterType="com.subject.domain.entity.Download">
+        UPDATE sys_download
+        <set>
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="description != null and description != ''">description = #{description},</if>
+            <if test="fileUrl != null and fileUrl != ''">file_url = #{fileUrl},</if>
+            <if test="fileSize != null and fileSize != ''">file_size = #{fileSize},</if>
+            <if test="category != null and category != ''">category = #{category},</if>
+            update_time = NOW()
+        </set>
+        WHERE download_id = #{downloadId} AND del_flag = 0
+    </update>
+
+    <update id="deleteDownloadById" parameterType="java.lang.Integer">
+        UPDATE sys_download SET del_flag = 1, update_time = NOW()
+        WHERE download_id = #{downloadId}
+    </update>
+
+    <update id="incrementDownloadCount" parameterType="java.lang.Integer">
+        UPDATE sys_download SET download_count = download_count + 1
+        WHERE download_id = #{downloadId} AND del_flag = 0
+    </update>
+</mapper>

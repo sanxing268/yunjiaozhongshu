@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.subject.mapper.ConclusionMapper">
+    <resultMap id="ConclusionMap" type="com.subject.domain.vo.ConclusionVo">
+        <id property="conclusionId" column="conclusion_id"/>
+        <result property="file" column="file"/>
+        <result property="opinion" column="opinion"/>
+        <result property="applyId" column="apply_id"/>
+        <association property="project" javaType="com.subject.domain.entity.Project">
+            <id property="projectId" column="project_id"/>
+            <result property="name" column="name"/>
+            <result property="organization" column="organization"/>
+            <result property="format" column="format"/>
+            <result property="teacherId" column="teacher_id"/>
+            <result property="phone" column="phone"/>
+            <result property="mail" column="mail"/>
+            <result property="startDate" column="start_date"/>
+            <result property="endDate" column="end_date"/>
+            <result property="major" column="major"/>
+            <result property="sponsor" column="sponsor"/>
+            <result property="contractor" column="contractor"/>
+            <result property="projectDate" column="project_date"/>
+            <result property="objective" column="objective"/>
+        </association>
+		<association property="teamVo" javaType="com.subject.domain.vo.TeamVo">
+			<id property="teamNo" column="team_no"/>
+			<result property="title" column="title"/>
+			<result property="teamName" column="team_name"/>
+			<result property="enrollTime" column="enroll_time"/>
+			<result property="conStatus" column="con_status"/>
+			<collection column="team_no" property="memberList" javaType="java.util.List" ofType="com.subject.domain.entity.TeamMember" select="selectMember"/>
+		</association>
+		<association property="prize" javaType="com.subject.domain.entity.Prize">
+			<id property="prizeId" column="prize_id"/>
+			<result property="level" column="level"/>
+		</association>
+    </resultMap>
+    <select id="selectPageConclusionList" resultMap="ConclusionMap">
+		SELECT
+			conclusion.conclusion_id,
+			conclusion.file,
+			conclusion.opinion,
+			conclusion.apply_id,
+			project.project_id,
+			project.`name`,
+			project.organization,
+			project.format,
+			project.teacher_id,
+			project.phone,
+			project.mail,
+			project.start_date,
+			project.end_date,
+			project.major,
+			project.sponsor,
+			project.contractor,
+			project.project_date,
+			project.objective,
+			team.team_no,
+			team.title,
+			team.team_name,
+			team.enroll_time,
+			team.con_status,
+			prize.prize_id,
+			prize.`level`
+		FROM
+			sys_project project
+		JOIN sys_team team ON team.project_id = project.project_id
+		LEFT JOIN sys_conclusion conclusion ON conclusion.team_no = team.team_no
+		LEFT JOIN sys_prize prize ON prize.prize_id = conclusion.prize_id
+		<if test="ew.sqlSegment != null and ew.sqlSegment != ''">
+			${ew.customSqlSegment}
+		</if>
+    </select>
+
+	<resultMap id="MemberMap" type="com.subject.domain.entity.TeamMember">
+		<id property="memberNo" column="member_no"/>
+		<result property="teamNo" column="team_no"/>
+		<result property="studentNo" column="student_no"/>
+		<result property="studentName" column="student_name"/>
+		<result property="collegeName" column="college_name"/>
+		<result property="className" column="class_name"/>
+		<result property="grade" column="grade"/>
+		<result property="major" column="major"/>
+		<result property="mail" column="mail"/>
+		<result property="mobileNumber" column="mobile_number"/>
+	</resultMap>
+	<select id="selectMember" resultMap="MemberMap">
+       SELECT
+        	member.member_no,
+        	member.team_no,
+        	member.student_no,
+        	member.student_name,
+        	member.college_name,
+        	member.class_name,
+        	member.grade,
+        	member.major,
+        	member.mail,
+        	member.mobile_number
+        FROM
+        	team_member member
+        where member.team_no=#{team_no}
+    </select>
+</mapper>

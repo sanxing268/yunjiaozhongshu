@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.subject.mapper.TeamMapper">
+    <insert id="saveTeam" >
+        insert into sys_team
+        (
+        team_no,
+        title,
+        team_name,
+        enroll_time,
+        project_id,
+        teacher,
+        status,
+         create_user_id,
+         teacher_id
+        )
+        values
+            (
+            #{teamNo},
+            #{title},
+            #{teamName},
+            #{enrollTime},
+            #{projectId},
+            #{teacher},
+            #{status},
+        <if test="createUserId != null and createUserId != ''">
+            #{createUserId}
+        </if>
+        <if test="createUserId == null or createUserId == ''">
+            NULL
+        </if>,
+        <if test="teacherId != null and teacherId != ''">
+            #{teacherId}
+        </if>
+        <if test="teacherId == null or teacherId == ''">
+            NULL
+        </if>
+            )
+    </insert>
+    <resultMap id="TeamMap" type="com.subject.domain.vo.TeamVo">
+        <id property="teamNo" column="team_no"/>
+        <result property="title" column="title"/>
+        <result property="teamName" column="team_name"/>
+        <result property="projectId" column="project_id"/>
+        <result property="enrollTime" column="enroll_time"/>
+        <result property="teacher" column="teacher"/>
+        <result property="status" column="status"/>
+        <result property="opinion" column="opinion"/>
+        <collection column="team_no" property="memberList" javaType="java.util.List" ofType="com.subject.domain.entity.TeamMember" select="selectMember"/>
+    </resultMap>
+    <resultMap id="MemberMap" type="com.subject.domain.entity.TeamMember">
+        <id property="memberNo" column="member_no"/>
+        <result property="teamNo" column="team_no"/>
+        <result property="studentNo" column="student_no"/>
+        <result property="studentName" column="student_name"/>
+        <result property="collegeName" column="college_name"/>
+        <result property="className" column="class_name"/>
+        <result property="grade" column="grade"/>
+        <result property="major" column="major"/>
+        <result property="mail" column="mail"/>
+        <result property="mobileNumber" column="mobile_number"/>
+    </resultMap>
+    <select id="selectPageTeam" resultMap="TeamMap">
+        SELECT
+            team.team_no,
+            team.title,
+            team.team_name,
+            team.project_id,
+            team.enroll_time,
+            team.teacher,
+            team.status,
+            team.opinion,
+            team.con_status,
+            team.create_user_id,
+            team.teacher_id
+        FROM
+        sys_team team
+        <if test="ew.sqlSegment != null and ew.sqlSegment != ''">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
+    <select id="selectMember" resultMap="MemberMap">
+       SELECT
+        	member.member_no,
+        	member.team_no,
+        	member.student_no,
+        	member.student_name,
+        	member.college_name,
+        	member.class_name,
+        	member.grade,
+        	member.major,
+        	member.mail,
+        	member.mobile_number
+        FROM
+        	team_member member
+        where member.team_no=#{team_no} and member.delete_flag=0
+    </select>
+
+    <update id="updateTeamForCommit" parameterType="com.subject.domain.entity.Team">
+        UPDATE sys_team
+        <set>
+            status = #{team.status},
+            con_status = #{team.conStatus}
+        </set>
+        WHERE team_no = #{team.teamNo}
+    </update>
+
+</mapper>

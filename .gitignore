@@ -1,0 +1,130 @@
+# ==============================
+# 运行时临时文件
+# ==============================
+.runtime/
+
+# ==============================
+# 后端 (Spring Boot / Maven)
+# ==============================
+subject-competition-master/target/
+
+# Maven wrapper jar
+!.mvn/wrapper/maven-wrapper.jar
+
+# STS / Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# ==============================
+# 前端 (Vue.js / Node.js)
+# ==============================
+subject-competition-vue/node_modules/
+subject-competition-vue/dist/
+subject-competition-vue/dist.zip
+
+subject-competition-vue/test/unit/coverage/
+subject-competition-vue/test/e2e/reports/
+
+# 根目录残留的 package-lock.json（无对应 package.json）
+package-lock.json
+
+# npm / yarn 日志
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+yarn.lock
+selenium-debug.log
+
+# node 安装包（.runtime 里有一份，根目录也可能出现）
+node-v*-win-*/
+node-v*.zip
+
+# ==============================
+# IDE 配置
+# ==============================
+.idea/
+*.iws
+*.iml
+*.ipr
+
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# ==============================
+# 系统文件
+# ==============================
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# ==============================
+# 日志文件
+# ==============================
+*.log
+*.pid
+
+# ==============================
+# 压缩包
+# ==============================
+*.zip
+*.tar.gz
+*.rar
+
+# ==============================
+# Java 相关
+# ==============================
+*.class
+*.jar
+*.war
+HELP.md
+
+# ==============================
+# 敏感配置文件（含密码、API Key、数据库连接串）
+# ==============================
+# Spring Boot 主配置（含数据库密码、COS 密钥、AI API Key）
+subject-competition-master/src/main/resources/application.yaml
+# 本地环境配置覆盖
+subject-competition-master/src/main/resources/application-local.yaml
+subject-competition-master/src/main/resources/application-local.properties
+# 包含真实密钥的 properties
+subject-competition-master/src/main/resources/secret.properties
+# 环境变量文件
+.env
+.env.local
+.env.*.local
+# 本地 Maven settings（可能含私服密码）
+subject-competition-master/settings.xml
+# 密钥证书文件
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+*.keystore
+*.p1k
+id_rsa
+id_dsa
+
+# ==============================
+# 数据库
+# ==============================
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3

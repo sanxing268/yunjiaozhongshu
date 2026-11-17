@@ -1,0 +1,142 @@
+/* Application-wide responsive rules */
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img,
+video,
+canvas {
+  max-width: 100%;
+}
+
+.app-index {
+  width: 100%;
+  min-width: 0;
+}
+
+.el-dialog {
+  max-width: calc(100vw - 24px);
+}
+
+.el-message-box {
+  max-width: calc(100vw - 24px);
+}
+
+.el-message {
+  max-width: calc(100vw - 32px);
+}
+
+.el-table {
+  max-width: 100%;
+}
+
+.el-table .cell {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1024px) {
+  .app-index {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .app-index {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .el-dialog {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    margin-top: 5vh !important;
+  }
+
+  .el-message-box {
+    width: calc(100vw - 24px) !important;
+    min-width: 0 !important;
+  }
+
+  .el-message {
+    min-width: 0 !important;
+  }
+
+  .el-notification {
+    right: 12px !important;
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+  }
+
+  .el-table {
+    font-size: 12px;
+  }
+
+  .el-table__body-wrapper,
+  .el-table__header-wrapper {
+    overflow-x: auto;
+  }
+
+  .el-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    white-space: normal;
+  }
+
+  .el-pagination .btn-prev,
+  .el-pagination .btn-next,
+  .el-pager li {
+    margin: 0 2px;
+  }
+
+  .el-button {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-index {
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+
+  .card {
+    height: 150px;
+  }
+
+  .card h3 {
+    font-size: 18px;
+  }
+
+  .card-block {
+    padding: 12px;
+  }
+
+  .el-pagination__rightwrapper {
+    float: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .el-pagination__jump {
+    display: none !important;
+  }
+}
+

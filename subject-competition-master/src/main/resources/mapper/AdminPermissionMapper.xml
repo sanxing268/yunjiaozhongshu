@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.subject.mapper.AdminPermissionMapper">
+    <select id="listPermissionURLsByUser" parameterType="String" resultType="String">
+	SELECT
+		admin_permission.url
+	FROM
+		admin_permission
+	WHERE
+		admin_permission.id IN (
+			SELECT DISTINCT
+				admin_role_permission.pid
+			FROM
+				admin_role_permission
+			JOIN admin_user_role ON admin_role_permission.rid = `admin_user_role`.rid
+			JOIN `user` ON user.id = `admin_user_role`.uid
+			WHERE
+				user.username = #{username}
+		)
+
+    </select>
+</mapper>
