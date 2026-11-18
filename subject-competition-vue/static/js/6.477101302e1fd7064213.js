@@ -1,0 +1,2 @@
+webpackJsonp([6],{BTm6:function(e,t){},hfsx:function(e,t,r){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n={render:function(){var e=this.$createElement;return(this._self._c||e)("div",{staticClass:"error-page"})},staticRenderFns:[]};var a=r("VU/8")({name:"Error404"},n,!1,function(e){r("BTm6")},"data-v-6160f2b4",null);t.default=a.exports}});
+//# sourceMappingURL=6.477101302e1fd7064213.js.map
